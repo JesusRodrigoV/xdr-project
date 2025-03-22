@@ -20,6 +20,37 @@ This project implements an XDR solution that provides comprehensive threat detec
 - Bun runtime
 - Git
 
+### For Windows Users
+
+Important: Windows users must follow these manual installation steps before running the automated script.
+
+1. Install WSL
+
+WSL (Windows Subsystem for Linux) allows you to run Linux on Windows. Install it and set it to version 2:
+
+```powershell
+wsl --install
+wsl --set-default-version 2
+```
+
+2. Install Ubuntu Distribution
+
+Install Ubuntu in WSL:
+
+```powershell
+wsl --install -d Ubuntu
+```
+
+3. Access Ubuntu
+
+Once installation is complete, open Ubuntu from the Start menu or run:
+
+```powershell
+wsl -d Ubuntu
+```
+
+After entering Ubuntu, continue with the regular installation steps below.
+
 ## Installation
 
 ```bash
