@@ -257,6 +257,42 @@ if [ $attempt -gt $max_attempts ]; then
   echo "Podés verificar el estado con: sudo systemctl status logstash"
 fi
 
+# Configurar Logstash
+LOGSTASH_CONF="/etc/logstash/conf.d/suricata.conf"
+
+sudo tee $LOGSTASH_CONF >/dev/null <<EOL
+input {
+  http {
+    port => 5044
+  }
+}
+
+filter {
+  mutate {
+    add_field => {
+      "[@metadata][elastic_username]" => "$ELASTIC_USER"
+      "[@metadata][elastic_password]" => "$ELASTIC_PASSWORD"
+    }
+  }
+}
+
+output {
+  if [anomaly] == "true" {
+    elasticsearch {
+      hosts => ["http://${ELASTIC_ENDPOINT}"]
+      index => "suricata-anomalies-%%{+YYYY.MM.dd}"
+      user => "$ELASTIC_USER"
+      password => "$ELASTIC_PASSWORD"
+    }
+  }
+}
+EOL
+
+# Reiniciar servicios
+sudo systemctl restart logstash
+
+echo "✅ Configuración completa!"
+
 # Remove unused packages
 sudo apt-get autoremove -y
 

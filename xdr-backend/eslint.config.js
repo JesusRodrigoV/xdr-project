@@ -6,7 +6,6 @@ import unusedImports from "eslint-plugin-unused-imports";
 import airbnbBase from "eslint-config-airbnb-base";
 import airbnbBaseTypescript from "eslint-config-airbnb-base-typescript";
 
-/** @type {import('eslint').Linter.Config[]} */
 export default [
   js.configs.recommended,
   {
@@ -46,4 +45,3 @@ export default [
     },
   },
 ];
-

@@ -1,1 +1,171 @@
-<p>inicio works!</p>
+<div class="dashboard-container">
+  <div>
+    <mat-form-field appearance="outline">
+      <mat-label>Filtrar por IP</mat-label>
+      <input
+        matInput
+        (input)="filterAnomalies($event)"
+        placeholder="Ej. 192.168.1.1"
+      />
+    </mat-form-field>
+    <h2>🚨 Tráfico Anómalo Detectado</h2>
+    @defer (when chartData$) {
+      @if (chartData$ | async) {
+        <div class="chart-container">
+          <canvas id="anomalyChart"></canvas>
+        </div>
+      } @else {
+        <div class="no-data-container">
+          <p>
+            ✅ No se han detectado amenazas o tráfico anómalo en este momento.
+          </p>
+        </div>
+      }
+    } @placeholder {
+      <div class="loading-container">
+        <mat-spinner mode="indeterminate" diameter="75"></mat-spinner>
+        <p>Cargando datos de anomalías del placeholder...</p>
+      </div>
+    } @loading (minimum 1s; after 500ms) {
+      <div class="loading-container">
+        <mat-spinner mode="indeterminate" diameter="75"></mat-spinner>
+        <p>Cargando datos de anomalías...</p>
+      </div>
+    } @error {
+      <div class="error-container">
+        <p>Error al cargar los datos de tráfico anómalo</p>
+        <button mat-button (click)="retryLoading()">Reintentar</button>
+      </div>
+    }
+  </div>
+  <p>Alertas(talvez no haya nada)</p>
+  <mat-card *ngFor="let alert of alerts()" color="warn">
+    🚨 Alerta: IP {{ alert.ip }} - Riesgo {{ alert.risk }}
+    <p><strong>🚨 Alerta:</strong> {{ alert.msg }}</p>
+    <p><strong>Origen:</strong> {{ alert.src }}</p>
+    <p><strong>Destino:</strong> {{ alert.dst }}</p>
+    <p><strong>Hora:</strong> {{ alert.timestamp }}</p>
+  </mat-card>
+  <table mat-table [dataSource]="originalAnomalies" class="mat-elevation-z8">
+    <!-- Columna IP de Origen -->
+    <ng-container matColumnDef="src_ip">
+      <th mat-header-cell *matHeaderCellDef>IP Origen</th>
+      <td mat-cell *matCellDef="let row">{{ row._source.src_ip }}</td>
+    </ng-container>
+
+    <!-- Columna IP de Destino -->
+    <ng-container matColumnDef="dest_ip">
+      <th mat-header-cell *matHeaderCellDef>IP Destino</th>
+      <td mat-cell *matCellDef="let row">{{ row._source.dest_ip }}</td>
+    </ng-container>
+
+    <!-- Columna Tamaño de Paquete -->
+    <ng-container matColumnDef="pkt_len">
+      <th mat-header-cell *matHeaderCellDef>Tamaño de Paquete</th>
+      <td mat-cell *matCellDef="let row">{{ row._source.pkt_len }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="['src_ip', 'dest_ip', 'pkt_len']"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: ['src_ip', 'dest_ip', 'pkt_len']"
+    ></tr>
+  </table>
+
+  <button mat-raised-button color="primary" (click)="exportPDF()">
+    📄 Exportar PDF
+  </button>
+  <button mat-raised-button color="accent" (click)="exportExcel()">
+    📊 Exportar Excel
+  </button>
+  <div class="chat-container">
+    <div class="chat-messages">
+      @for (msg of chatHistory(); track msg) {
+        <div class="message-group">
+          <div class="user-message">
+            <span class="avatar">👤</span>
+            <p>{{ msg.user }}</p>
+          </div>
+
+          @if (msg.response) {
+            <div class="bot-message">
+              <span class="avatar">🤖</span>
+              <mat-card class="bot-content">
+                @if (msg.response.resumen) {
+                  <mat-card-content class="response-section summary">
+                    <div class="section-header">
+                      <mat-icon>summarize</mat-icon>
+                      <h4>Resumen</h4>
+                    </div>
+                    <p>{{ msg.response.resumen }}</p>
+                  </mat-card-content>
+                }
+                @if (msg.response.explicacion) {
+                  <mat-card-content class="response-section explanation">
+                    <div class="section-header">
+                      <mat-icon>info</mat-icon>
+                      <h4>Explicación</h4>
+                    </div>
+                    <p>{{ msg.response.explicacion }}</p>
+                  </mat-card-content>
+                }
+                @if (msg.response.recomendaciones?.length) {
+                  <mat-card-content class="response-section recommendations">
+                    <div class="section-header">
+                      <mat-icon>lightbulb</mat-icon>
+                      <h4>Recomendaciones</h4>
+                    </div>
+                    <ul>
+                      @for (rec of msg.response.recomendaciones; track rec) {
+                        <li><mat-icon>arrow_right</mat-icon> {{ rec }}</li>
+                      }
+                    </ul>
+                  </mat-card-content>
+                }
+                @if (msg.response.referencias?.length) {
+                  <mat-card-content class="response-section references">
+                    <div class="section-header">
+                      <mat-icon>link</mat-icon>
+                      <h4>Referencias</h4>
+                    </div>
+                    <ul>
+                      @for (ref of msg.response.referencias; track ref) {
+                        <li><mat-icon>library_books</mat-icon> {{ ref }}</li>
+                      }
+                    </ul>
+                  </mat-card-content>
+                }
+              </mat-card>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="chat-input">
+      <mat-form-field appearance="outline" class="message-input">
+        <mat-label>Escribe tu mensaje</mat-label>
+        <input
+          matInput
+          [ngModel]="userMessage()"
+          (ngModelChange)="userMessage.set($event)"
+          placeholder="¿En qué puedo ayudarte?"
+          (keyup.enter)="sendMessage()"
+        />
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="sendMessage()">
+        <span class="material-icons">send</span>
+        Enviar
+      </button>
+    </div>
+  </div>
+  <div>
+    <input [(ngModel)]="inputData.duration" placeholder="Duración" />
+    <input [(ngModel)]="inputData.src_bytes" placeholder="Bytes enviados" />
+    <input [(ngModel)]="inputData.dst_bytes" placeholder="Bytes recibidos" />
+    <input [(ngModel)]="inputData.count" placeholder="Recuento de paquetes" />
+
+    <button (click)="checkAnomaly()">🔍 Analizar</button>
+    <p>Resultado: {{ anomalyResult }}</p>
+  </div>
+</div>

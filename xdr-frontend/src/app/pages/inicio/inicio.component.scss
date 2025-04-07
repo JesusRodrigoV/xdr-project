@@ -1,0 +1,152 @@
+.chat-container {
+  margin-top: 2rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+
+  .chat-messages {
+    max-height: 500px;
+    overflow-y: auto;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .message-group {
+    margin-bottom: 1.5rem;
+
+    .user-message,
+    .bot-message {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+
+      .avatar {
+        font-size: 1.5rem;
+      }
+    }
+
+    .user-message {
+      justify-content: flex-end;
+      p {
+        background: rgba(0, 123, 255, 0.1);
+        padding: 0.8rem;
+        border-radius: 12px 12px 0 12px;
+        margin: 0;
+      }
+    }
+
+    .bot-message {
+      justify-content: flex-start;
+
+      .bot-content {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1rem;
+        border-radius: 12px 12px 12px 0;
+        max-width: 80%;
+
+        .response-section {
+          margin-bottom: 1rem;
+
+          h4 {
+            color: #0091ea;
+            margin-bottom: 0.5rem;
+          }
+
+          ul {
+            margin: 0;
+            padding-left: 1.5rem;
+          }
+        }
+      }
+    }
+  }
+
+  .chat-input {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+
+    .message-input {
+      flex: 1;
+    }
+
+    button {
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+}
+.dashboard-container {
+  margin-top: 30px;
+  padding: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+
+  .chart-container {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    height: 400px;
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    margin-top: 70px;
+    padding: 15px;
+  }
+
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+
+    p {
+      margin-top: 20px;
+      color: #666;
+    }
+  }
+
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 400px;
+    color: #f44336;
+
+    button {
+      margin-top: 16px;
+    }
+  }
+  .no-data-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    padding: 20px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+
+    p {
+      font-size: 1.2em;
+      color: #4caf50;
+      margin: 0;
+    }
+  }
+}
+table {
+  width: 100%;
+}
+th {
+  background-color: #1976d2;
+}

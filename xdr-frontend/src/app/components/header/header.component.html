@@ -1,1 +1,18 @@
-<p>header works!</p>
+<header>
+  <mat-toolbar color="primary">
+    <span>🔍 Sistema de Monitoreo</span>
+    <span class="spacer"></span>
+    <button mat-button routerLink="/dashboard">Dashboard</button>
+
+    <button mat-icon-button (click)="themeService.toggleTheme()">
+      <mat-icon>{{
+        themeService.isDarkMode() ? "brightness_3" : "brightness_7"
+      }}</mat-icon>
+    </button>
+    <span class="header__username">{{ appStore.user()?.username }}</span>
+    <button mat-button type="button" (click)="appStore.logout()">
+      <i class="bx bx-log-out"></i>
+      <span>Cerrar Sesión</span>
+    </button>
+  </mat-toolbar>
+</header>
