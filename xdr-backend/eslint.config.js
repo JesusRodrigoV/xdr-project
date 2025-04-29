@@ -25,7 +25,7 @@ export default [
       ...airbnbBase.rules,
       ...airbnbBaseTypescript.rules,
       "no-unused-vars": "off",
-      "unused-import/no-unused-vars": [
+      "unused-imports/no-unused-vars": [
         "warn",
         {
           vars: "all",

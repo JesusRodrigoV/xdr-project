@@ -1,0 +1,9 @@
+@load base/protocols/http
+@load base/protocols/dns
+@load base/protocols/ssl
+@load base/frameworks/notice
+@load policy/misc/loaded-scripts
+
+redef LogAscii::json_timestamps = JSON::TS_ISO8601;
+redef LogAscii::use_json = T;
+

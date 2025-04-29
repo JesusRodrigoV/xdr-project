@@ -1,18 +1,48 @@
-<header>
-  <mat-toolbar color="primary">
-    <span>🔍 Sistema de Monitoreo</span>
-    <span class="spacer"></span>
-    <button mat-button routerLink="/dashboard">Dashboard</button>
+<header class="header">
+  <mat-toolbar>
+    <div class="header__nav">
+      <img src="assets/logo.png" alt="Logo" class="header__logo" />
 
-    <button mat-icon-button (click)="themeService.toggleTheme()">
-      <mat-icon>{{
-        themeService.isDarkMode() ? "brightness_3" : "brightness_7"
-      }}</mat-icon>
-    </button>
-    <span class="header__username">{{ appStore.user()?.username }}</span>
-    <button mat-button type="button" (click)="appStore.logout()">
-      <i class="bx bx-log-out"></i>
-      <span>Cerrar Sesión</span>
-    </button>
+      <nav class="header__menu">
+        <a mat-button routerLink="/inicio" routerLinkActive="active">Inicio</a>
+        <a mat-button routerLink="/eventos" routerLinkActive="active"
+          >Eventos</a
+        >
+        <a mat-button routerLink="/analisis" routerLinkActive="active"
+          >Análisis</a
+        >
+        <a mat-button routerLink="/configuracion" routerLinkActive="active"
+          >Configuración</a
+        >
+      </nav>
+
+      <div class="header__actions">
+        <button mat-icon-button (click)="themeService.toggleTheme()">
+          <mat-icon>{{
+            themeService.isDarkMode() ? "brightness_3" : "brightness_7"
+          }}</mat-icon>
+        </button>
+
+        <button
+          mat-button
+          [matMenuTriggerFor]="profileMenu"
+          class="header__profile"
+        >
+          <span class="header__username">{{ appStore.user()?.username }}</span>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+
+        <mat-menu #profileMenu="matMenu">
+          <button mat-menu-item routerLink="/perfil">
+            <mat-icon>person</mat-icon>
+            <span>Perfil</span>
+          </button>
+          <button mat-menu-item (click)="appStore.logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span>Cerrar Sesión</span>
+          </button>
+        </mat-menu>
+      </div>
+    </div>
   </mat-toolbar>
 </header>

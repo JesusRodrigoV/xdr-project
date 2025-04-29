@@ -254,7 +254,6 @@ done
 
 if [ $attempt -gt $max_attempts ]; then
   echo "⚠️ Logstash está tardando más de lo esperado en iniciar"
-  echo "Podés verificar el estado con: sudo systemctl status logstash"
 fi
 
 # Configurar Logstash
@@ -291,7 +290,7 @@ EOL
 # Reiniciar servicios
 sudo systemctl restart logstash
 
-echo "✅ Configuración completa!"
+echo "Configuración completa!"
 
 # Remove unused packages
 sudo apt-get autoremove -y

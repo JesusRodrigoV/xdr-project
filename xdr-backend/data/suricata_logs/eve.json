@@ -1,0 +1,6 @@
+
+{"flow_id": "1", "src_ip": "192.168.1.100", "dest_ip": "10.0.0.50", "proto": "tcp", "pkt_len": 1500, "alert": true}
+{"flow_id": "2", "src_ip": "192.168.1.101", "dest_ip": "10.0.0.51", "proto": "udp", "pkt_len": 64, "alert": false}
+{"flow_id": "3", "src_ip": "192.168.1.102", "dest_ip": "10.0.0.52", "proto": "tcp", "pkt_len": 2000, "alert": true}
+{"flow_id": "4", "src_ip": "192.168.1.103", "dest_ip": "10.0.0.53", "proto": "tcp", "pkt_len": 120, "alert": false}
+{"flow_id": "5", "src_ip": "192.168.1.104", "dest_ip": "10.0.0.54", "proto": "udp", "pkt_len": 800, "alert": false}

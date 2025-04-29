@@ -1,36 +1,70 @@
+:host {
+  --login-bg-light: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+  --login-bg-dark: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  --card-bg-light: rgba(248, 250, 252, 0.97);
+  --card-bg-dark: rgba(30, 41, 59, 0.97);
+  --card-shadow-light: 0 8px 32px rgba(51, 65, 85, 0.08);
+  --card-shadow-dark: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --text-primary-light: #334155;
+  --text-primary-dark: #e2e8f0;
+  --text-secondary-light: #64748b;
+  --text-secondary-dark: #94a3b8;
+  --accent-light: #3b82f6;
+  --accent-dark: #60a5fa;
+  --border-light: rgba(148, 163, 184, 0.1);
+  --border-dark: rgba(148, 163, 184, 0.05);
+
+  --login-bg: var(--login-bg-light);
+  --card-bg: var(--card-bg-light);
+  --card-shadow: var(--card-shadow-light);
+  --text-primary: var(--text-primary-light);
+  --text-secondary: var(--text-secondary-light);
+  --accent: var(--accent-light);
+  --border: var(--border-light);
+
+  :root.dark-mode & {
+    --login-bg: var(--login-bg-dark);
+    --card-bg: var(--card-bg-dark);
+    --card-shadow: var(--card-shadow-dark);
+    --text-primary: var(--text-primary-dark);
+    --text-secondary: var(--text-secondary-dark);
+    --accent: var(--accent-dark);
+    --border: var(--border-dark);
+  }
+}
+
 .login-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--login-bg);
   padding: 20px;
-  min-height: 100vh; /* Resta la altura del header */
+  min-height: 100vh;
   width: 100%;
   position: relative;
   box-sizing: border-box;
-  margin-top: var(
-    --header-height
-  ); /* Añade margen superior igual a la altura del header */
+  margin-top: var(--header-height);
 }
 
 .login-card {
   width: 100%;
   max-width: 400px;
   padding: 2rem;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1) !important;
+  box-shadow: var(--card-shadow) !important;
   border-radius: 16px !important;
   backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.95) !important;
+  background: var(--card-bg) !important;
   animation: fadeIn 0.5s ease-in-out;
+  border: 1px solid var(--border);
 }
 
 .login-header {
   text-align: center;
   margin-bottom: 2rem;
-  color: #333;
+  color: var(--text-primary);
 
   i {
-    color: #667eea;
+    color: var(--accent);
     margin-bottom: 1rem;
   }
 
@@ -38,12 +72,12 @@
     margin: 0;
     font-size: 1.8rem;
     font-weight: 600;
-    color: #2d3748;
+    color: var(--text-primary);
   }
 }
 
 .login-subtitle {
-  color: #666;
+  color: var(--text-secondary);
   margin-top: 0.5rem;
   font-size: 0.9rem;
 }
@@ -56,12 +90,26 @@
   mat-form-field {
     width: 100%;
 
-    ::ng-deep .mat-form-field-wrapper {
-      margin: 0;
+    ::ng-deep {
+      .mat-form-field-wrapper {
+        margin: 0;
+      }
+
+      .mat-form-field-outline {
+        color: var(--border);
+      }
+
+      .mat-input-element {
+        color: var(--text-primary);
+      }
+
+      .mat-form-field-label {
+        color: var(--text-secondary);
+      }
     }
 
     mat-icon {
-      color: #667eea;
+      color: var(--accent);
     }
   }
 }
@@ -74,17 +122,22 @@
 
   .remember-me {
     font-size: 0.9rem;
-    color: #666;
+    color: var(--text-secondary);
+
+    ::ng-deep .mat-checkbox-frame {
+      border-color: var(--border);
+    }
   }
 
   .forgot-password {
     font-size: 0.9rem;
-    color: #667eea;
+    color: var(--accent);
     text-decoration: none;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
 
     &:hover {
-      color: #764ba2;
+      color: var(--text-primary);
+      text-decoration: underline;
     }
   }
 }
@@ -97,11 +150,13 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background: linear-gradient(to right, #667eea, #764ba2) !important;
-  transition: transform 0.3s ease !important;
+  background: var(--login-bg) !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15) !important;
 
   &:not(:disabled):hover {
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.25) !important;
   }
 
   &:disabled {

@@ -10,7 +10,7 @@ export function authGuardAuthenticated(): CanActivateFn {
     if (!store.user()) {
       return true;
     }
-    router.navigate(['/dashboard']);
+    router.navigate(['/home']);
     return false;
   };
 }

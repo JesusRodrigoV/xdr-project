@@ -27,11 +27,10 @@ import { MatCardModule } from '@angular/material/card';
 import { ReportService } from '@app/services/report';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { ChatbotService } from '@app/services/chatbot';
 import { FormsModule } from '@angular/forms';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { ChatbotResponse } from '@app/models/chatbot';
 import { AnomalyService } from '@app/services/anomaly';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ChatbotComponent } from '@app/components/chatbot/chatbot.component';
 
 Chart.register(
   ArcElement,
@@ -57,15 +56,17 @@ Chart.defaults.color = '#fff';
     MatButtonModule,
     MatIconModule,
     FormsModule,
+    MatProgressBarModule,
+    ChatbotComponent,
   ],
   templateUrl: './inicio.component.html',
   styleUrl: './inicio.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class InicioComponent implements OnInit {
   private esService: ElasticsearchService = inject(ElasticsearchService);
   private socketService: SocketService = inject(SocketService);
   private reportService: ReportService = inject(ReportService);
-  private chatbotService: ChatbotService = inject(ChatbotService);
   private anomalyService: AnomalyService = inject(AnomalyService);
   chartData$: Observable<any>;
   filteredData$: Observable<any>;
@@ -74,10 +75,16 @@ export default class InicioComponent implements OnInit {
   chatHistory = signal<
     Array<{
       user: string;
-      response?: ChatbotResponse;
+      response?: {
+        text: string;
+        model: string;
+      };
     }>
   >([]);
+
   userMessage = signal<string>('');
+  loading = signal<boolean>(false);
+  error = signal<string | null>(null);
   inputData = { duration: 0, src_bytes: 0, dst_bytes: 0, count: 0 };
   anomalyResult: string = '';
 
@@ -184,53 +191,6 @@ export default class InicioComponent implements OnInit {
 
   exportExcel() {
     this.reportService.generateExcel(this.originalAnomalies);
-  }
-  private sanitizer = inject(DomSanitizer);
-
-  private formatBotResponse(text: string): SafeHtml {
-    const formattedText = text
-      .replace(/\*\*/g, '') // Remove double asterisks (bold)
-      .replace(/\*/g, '•') // Replace single asterisks with bullets
-      .replace(/\n/g, '<br>'); // Replace newlines with HTML line breaks
-    return this.sanitizer.bypassSecurityTrustHtml(formattedText);
-  }
-
-  sendMessage() {
-    if (this.userMessage().trim() === '') return;
-
-    const userMsg = this.userMessage();
-
-    this.chatHistory.update((history) => [...history, { user: userMsg }]);
-
-    this.chatbotService.sendMessage(userMsg).subscribe({
-      next: (response: ChatbotResponse) => {
-        this.chatHistory.update((history) => {
-          const newHistory = [...history];
-          newHistory[newHistory.length - 1].response = {
-            resumen: response.resumen,
-            explicacion: response.explicacion,
-            recomendaciones: response.recomendaciones,
-            referencias: response.referencias,
-          };
-          return newHistory;
-        });
-      },
-      error: (error) => {
-        console.log('Error:', error);
-        this.chatHistory.update((history) => {
-          const newHistory = [...history];
-          newHistory[newHistory.length - 1].response = {
-            resumen: 'Error en la comunicación',
-            explicacion: 'No se pudo procesar tu mensaje',
-            recomendaciones: ['Por favor, intenta nuevamente más tarde'],
-            referencias: [],
-          };
-          return newHistory;
-        });
-      },
-    });
-
-    this.userMessage.set('');
   }
   checkAnomaly() {
     this.anomalyService
